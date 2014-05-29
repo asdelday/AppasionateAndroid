@@ -1,0 +1,111 @@
+/* PROCCESING MODAL
+=================================*/
+#processing-modal,
+#filtering-modal {
+    position: fixed;
+    top: 50% !important;
+    left: 50% !important;
+    margin-top: -62px;
+    margin-left: -150px;
+    overflow: visible !important;
+    font-weight: bold;
+}
+
+#processing-modal,
+#processing-modal .modal-dialog,
+#processing-modal .modal-content,
+#filtering-modal,
+#filtering-modal .modal-dialog,
+#filtering-modal .modal-content {
+    width: 300px;
+    height: 124px;
+}
+
+#processing-modal .modal-dialog,
+#processing-modal .modal-content,
+#filtering-modal .modal-dialog,
+#filtering-modal .modal-content {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+#processing-modal .modal-content i,
+#filtering-modal .modal-content i {
+    font-size: 80px;
+    margin-right: 10px;
+}
+
+#processing-modal .loading-modal-text,
+#filtering-modal .loading-modal-text {
+    height: 80px;
+    line-height: 80px;
+}
+
+.my-label {
+    color: #FB7064;
+}
+
+.my-input {
+    color: #FB7064;
+    border: solid 3px rgba(251, 112, 100, 0.5);
+}
+
+.my-input:focus {
+    border: solid 3px rgba(251, 112, 100, 1);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(153, 59, 59, 0.6);
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(153, 59, 59, 0.6);
+    -o-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(153, 59, 59, 0.6);
+    -ms-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(153, 59, 59, 0.6);
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 8px rgba(153, 59, 59, 0.6);
+}
+
+.my-panel {
+    border: solid 5px #FB7064;
+    border-radius: 0px;
+    -moz-border-radius: 0px;
+    -o-border-radius: 0px;
+    -ms-border-radius: 0px;
+    -webkit-border-radius: 0px;
+}
+
+.my-panel .panel-heading {
+    background-color: #FB7064;
+    border-radius: 0px;
+    -moz-border-radius: 0px;
+    -o-border-radius: 0px;
+    -ms-border-radius: 0px;
+    -webkit-border-radius: 0px;
+}
+
+.my-panel .panel-heading .panel-title {
+    color: #FFF;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.my-panel .panel-body {
+
+}
+
+.my-panel .panel-footer {
+    background-color: #FFF;
+}
+
+.my-input-group span {
+    background: #FFF;
+    border: none;
+    color: #FB7064;
+    font-weight: bold;
+}
+
+.btn-main {
+    color: #FFF;
+    background-color: #FB7064;
+    border-color: #D76156;
+}
+
+.btn-main:hover, .btn-main:focus, .btn-main:active, .btn-main.active, .open .dropdown-toggle.btn-main {
+    color: #FFF;
+    background-color: #D76156;
+    border-color: #A64A41;
+}

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mapa</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="author" content="Rodrigo Ortega Cuesta">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<script type="text/javascript">
+		var usuario;
+
+		// Sesion
+		if (localStorage.login==null && sessionStorage.login==null) {
+			location.href='index.html';
+		} else if (sessionStorage.login != null) {
+			usuario = JSON.parse(sessionStorage.login);
+		} else if (localStorage.login != null) {
+			usuario = JSON.parse(localStorage.login);
+		}
+	</script>
+
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+	<!-- Important Owl stylesheet -->
+	<link rel="stylesheet" href="css/owl-carousel/owl.carousel.css">
+	<!-- Default Theme -->
+	<link rel="stylesheet" href="css/owl-carousel/owl.theme.css">
+	<link rel="stylesheet" href="css/general.css">
+	<link rel="stylesheet" href="css/map.css">
+
+	<style type="text/css">
+	  	html { height: 100% }
+	  	body { height: 100%; margin: 0; padding: 0 }
+	  	#map_canvas { height: 100% }
+	</style>
+</head>
+
+<body>
+
+	<div id="menuprincipal" class="page center">
+		<div id="wrapperMenu">
+			<div class="scroller">
+				<div id="contenidoMenu">
+					<div class="form-group text-right" id="input-search-wrapper">
+						<input data-cleaner="#clean-markers-searcher" type="text" class="text-left search form-control" id="inputSearchMarkers" placeholder="Buscar...">
+						<span data-target="#inputSearchMarkers" id="clean-markers-searcher" class="disabled"><i class="fa fa-times"></i></span>
+					</div>
+					<ul id="firstList"></ul>
+					<ul id="ulMenu" class="list">
+						<li><img style="margin-top:20px;" width="80px" height="80px" src="images/loader.GIF" alt="loader"></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="cuerpo" class="page transition center">
+		<div id="header">
+			<a id="btn-menu-principal"><div class="btn"><span id="menuIcon" class="glyphicon glyphicon-map-marker"></span></div></a>
+			<div id="headerTitulo">
+				<img class="logo" src="images/icon_appasionate.png" alt="logo" />
+				<h3>Appasionate</h3>
+			</div>
+			<a id="btn-option-salir"><span id="optionSalir" class="glyphicon glyphicon-off" ></span></a>
+		</div>
+		<div id="wrapper" class="wrapper-css">
+			<div id="map_canvas"></div>
+		</div>
+		<div id="options">
+			<button id="btn-relocate" type="button" class="optionsIcon btn btn-default">
+				<span  id="locateIcon" class="glyphicon glyphicon-screenshot">
+	        </button>
+	        <button id="btn-config" type="button" class="optionsIcon btn btn-default">
+	        	<span  id="confIcon" class="glyphicon glyphicon-cog">
+	        </button>
+		</div>
+	</div>
+
+
+	<!-- MODAL LOG OUT
+	=====================================================================-->
+	<div id="offModal" data-backdrop="static" class="modal fade">
+  		<div class="modal-dialog modal-sm">
+    		<div class="modal-content">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        			<h4 class="modal-title">Salir</h4>
+      			</div>
+	      		<div class="modal-footer">
+	        		<button id="btn-cerrar-sesion" type="button" class="btn btn-warning">
+	        			Cerrar sesión
+	        		</button>
+	        		<button id="btn-exit" type="button" class="btn btn-danger">
+	        			Salir
+	        		</button>
+	        		<button type="button" class="btn btn-default" data-dismiss="modal">
+	        			Cancelar
+	        		</button>
+	      		</div>
+    		</div><!-- /.modal-content -->
+  		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+
+	<!--  MARKER MODAL
+	================================================================================-->
+	<div id="marker-modal" data-backdrop="static" class="modal fade">
+  		<div class="modal-dialog">
+    		<div class="modal-content">
+
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        			<h4 class="modal-title"></h4>
+      			</div>
+
+      			<div class="modal-body">
+      				<div class="modal-body-contenido">
+
+      				</div>
+
+      				<div id="owl-marker" class="owl-carousel"></div>
+      			</div>
+
+      			<div class="modal-footer">
+        			<button type="button" class="btn btn-primary">Save changes</button>
+        			<button type="button" class="btn btn-default" data-dismiss="modal">
+        				<i class="fa fa-times"></i> Cerrar
+        			</button>
+      			</div>
+
+    		</div><!-- /.modal-content -->
+  		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+
+	<!--  NEW MARKER MODAL
+	================================================================================-->
+	<div id="new-marker-modal" data-backdrop="static" class="modal fade">
+  		<div class="modal-dialog">
+    		<div class="modal-content">
+
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        			<h4 class="modal-title">Nuevo marcador</h4>
+        			<p id="new-marker-lat-lng"></p>
+      			</div>
+
+      			<div class="modal-body">
+      				<div id="images-new-marker-container" class="text-center"></div>
+
+      				<div id="new-marker-form" class="form-horizontal">
+      					<div class="form-group">
+      						<label for="new-marker-titulo" class="col-sm-2 control-label my-label">Título:</label>
+      						<div class="col-sm-10">
+      							<input id="new-marker-titulo" type="text" name="new-marker-titulo" class="my-input form-control">
+      						</div>
+      					</div>
+      					<div class="form-group">
+      						<label for="new-marker-descripcion" class="col-sm-2 control-label my-label">Descripción:</label>
+      						<div class="col-sm-10">
+      							<textarea id="new-marker-descripcion" name="new-marker-descripcion" class="my-input form-control"></textarea>
+      						</div>
+      					</div>
+      					<div class="form-group" style="margin-bottom: 0px;">
+      						<label for="new-marker-clase" class="col-sm-2 control-label my-label">Clase:</label>
+      						<div class="col-sm-10">
+      							<select id="new-marker-clase" name="new-marker-clase" class="my-input form-control"></select>
+      						</div>
+      					</div>
+      				</div>
+
+      				<div id="new-marker-errors"></div>
+
+      			</div>
+
+      			<div class="modal-footer">
+        			<button type="button" class="btn btn-success" id="btn-guardar-nuevo-marcador">
+        				<i class="fa fa-save"></i> Guardar
+        			</button>
+        			<button type="button" class="btn btn-default" data-dismiss="modal">
+        				<i class="fa fa-times"></i> Cerrar
+        			</button>
+      			</div>
+
+    		</div><!-- /.modal-content -->
+  		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+
+	<!--  UPLOAD PHOTOS
+	================================================================================-->
+	<div id="upload-photos-modal" data-backdrop="static" class="modal fade">
+  		<div class="modal-dialog">
+    		<div class="modal-content">
+
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        			<h4 class="modal-title">¿Subir fotos?</h4>
+      			</div>
+
+      			<div class="modal-body text-center">
+      				<button id="get-image-files" class="btn btn-lg btn-main" style="margin-right:10px;">
+      					<i class="fa fa-image"></i> Galería
+      				</button>
+      				<button id="get-image-camera" class="btn btn-lg btn-main" style="margin-left:10px;">
+      					<i class="fa fa-camera"></i> Cámara
+      				</button>
+      				<div id="uploaded-photos" style="padding-top: 20px;">
+
+      					<!--<div class="img-upload">
+      						<img src="http://rodorte.com/appasionate/images/1_28.416706%2C-16.550790.jpg" alt="">
+      						<div class="btns-upload-photo text-center btn-group">
+      							<button onclick="seleccionarFoto($(this))" class="btn btn-sm btn-success active"><i class="fa fa-check"></i></button>
+      							<button onclick="deseleccionarFoto($(this))" class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
+      						</div>
+      					</div>
+
+      					<div class="img-upload">
+      						<img src="http://rodorte.com/appasionate/images/1_28.420025%2C-16.542990.jpg" alt="">
+      						<div class="btns-upload-photo text-center btn-group">
+      							<button onclick="seleccionarFoto($(this))" class="btn btn-sm btn-success active"><i class="fa fa-check"></i></button>
+      							<button onclick="deseleccionarFoto($(this))" class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
+      						</div>
+      					</div>-->
+      				</div>
+      				<div class="clearfix"></div>
+      			</div>
+
+      			<div class="modal-footer">
+        			<button type="button" class="btn btn-success" id="btn-upload-fotos">
+        				<i class="fa fa-cloud-upload"></i> Aceptar
+        			</button>
+        			<button type="button" class="btn btn-default" data-dismiss="modal">
+        				<i class="fa fa-times"></i> Cerrar
+        			</button>
+      			</div>
+
+    		</div><!-- /.modal-content -->
+  		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+
+
+	<!-- Static Modal
+    ============================================================================== -->
+    <div class="modal modal-static fade" data-backdrop="static" id="processing-modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center contenido-modal">
+                        <div class="pull-left"><i class="fa fa-spinner fa-5x fa-spin"></i></div>
+                        <div class="loading-modal-text">Cargando...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+	<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+	<script src="js/jquery-1.11.0.js" type="text/javascript"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="js/fastclick.js" type="text/javascript"></script>
+	<script src="js/iscroll.js" type="text/javascript"></script>
+	<script src="js/list.min.js" type="text/javascript"></script>
+	<script src="js/owl.carousel.js" type="text/javascript"></script>
+	<script src="js/map.js" type="text/javascript"></script>
+	<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCAR8KGFv_xij2OKDY1DJkBovYZWlTdqgQ&sensor=true"></script>
+
+    <script type="text/javascript">
+    	$('#processing-modal .loading-modal-text').html("Cargando datos...");
+    	$('#processing-modal').modal('show');
+
+        app.initialize();
+
+        //app.onDeviceReady();
+    </script>
+</body>
+</html>

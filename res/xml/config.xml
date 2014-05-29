@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget xmlns:cdv="http://cordova.apache.org/ns/1.0"
+    id="com.rodorte.appasionate"
+    version="0.0.1"
+    xmlns="http://www.w3.org/ns/widgets" >
+
+    <preference
+        name="loglevel"
+        value="DEBUG" />
+    <preference
+        name="AndroidLaunchMode"
+        value="singleTop" />
+
+    <feature name="App" >
+        <param
+            name="android-package"
+            value="org.apache.cordova.App" />
+    </feature>
+
+    <name>Appasionate</name>
+
+    <description>
+        Aplicacion de geolocalizacion de lugares interes con fin educativo.
+    </description>
+
+    <author
+        email="rodortcue@gmail.com"
+        href="http://rodorte.com" >
+        Rodrigo Ortega Cuesta
+    </author>
+    
+    <icon src="icon.png" />
+
+    <content src="index.html" />
+
+    <access origin="*" />
+
+    <feature name="NetworkStatus" >
+        <param
+            name="android-package"
+            value="org.apache.cordova.networkinformation.NetworkManager" />
+    </feature>
+    <feature name="Camera" >
+        <param
+            name="android-package"
+            value="org.apache.cordova.camera.CameraLauncher" />
+    </feature>
+    <feature name="File" >
+        <param
+            name="android-package"
+            value="org.apache.cordova.file.FileUtils" />
+        <param
+            name="onload"
+            value="true" />
+    </feature>
+    <feature name="FileTransfer" >
+        <param
+            name="android-package"
+            value="org.apache.cordova.filetransfer.FileTransfer" />
+    </feature>-->
+    <feature name="Notification" >
+        <param
+            name="android-package"
+            value="org.apache.cordova.dialogs.Notification" />
+    </feature>
+    <feature name="Vibration" >
+        <param
+            name="android-package"
+            value="org.apache.cordova.vibration.Vibration" />
+    </feature>
+
+</widget>
