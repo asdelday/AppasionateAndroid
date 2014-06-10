@@ -16,25 +16,6 @@
             name="android-package"
             value="org.apache.cordova.App" />
     </feature>
-
-    <name>Appasionate</name>
-
-    <description>
-        Aplicacion de geolocalizacion de lugares interes con fin educativo.
-    </description>
-
-    <author
-        email="rodortcue@gmail.com"
-        href="http://rodorte.com" >
-        Rodrigo Ortega Cuesta
-    </author>
-    
-    <icon src="icon.png" />
-
-    <content src="index.html" />
-
-    <access origin="*" />
-
     <feature name="NetworkStatus" >
         <param
             name="android-package"
@@ -57,7 +38,7 @@
         <param
             name="android-package"
             value="org.apache.cordova.filetransfer.FileTransfer" />
-    </feature>-->
+    </feature>
     <feature name="Notification" >
         <param
             name="android-package"
@@ -68,5 +49,23 @@
             name="android-package"
             value="org.apache.cordova.vibration.Vibration" />
     </feature>
+
+    <name>
+Appasionate
+    </name>
+
+    <description>
+        Aplicación con fines educativos destinada a centros escolares.
+    </description>
+
+    <author
+        email="rodortcue@gmail.com"
+        href="http://rodorte.com" >
+        Rodrigo Ortega Cuesta
+    </author>
+
+    <content src="index.html" />
+
+    <access origin="*" />
 
 </widget>

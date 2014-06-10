@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="text/html; charset=utf-8" http-equiv="content-type">
+
+        <title>QuizAdmin</title>
+
+        <script type="text/javascript">
+            var usuario;
+
+            // Sesion
+            if (localStorage.login==null && sessionStorage.login==null) {
+                location.href='index.html';
+            } else if (sessionStorage.login != null) {
+                usuario = JSON.parse(sessionStorage.login);
+            } else if (localStorage.login != null) {
+                usuario = JSON.parse(localStorage.login);
+            }
+
+            if (usuario.rol.toLowerCase() !== "admin") {
+                window.history.back();
+            }
+        </script>
+
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+        <link href="css/flat/red.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/general.css">
+        <link href="css/quizAdmin.css" media="screen" rel="stylesheet" type="text/css">
+    </head>
+
+    <body>
+        <div id="main">
+            <div id="header">
+                <div id="headerTitulo" class="menu-principal" style="cursor: pointer;">
+                    <img class="logo" src="images/icon_appasionate.png" alt="logo" />
+                    <h3>Appasionate</h3>
+                </div>
+                <a id="btn-option-salir"><span id="optionSalir" class="glyphicon glyphicon-off" ></span></a>
+            </div>
+
+            <div id="quizAdminWrapper">
+
+                <!-- QUIZ ADMIN
+                ================================================================ -->
+                <div id="quizAdmin">
+
+                    <!-- QUIZ EXAMEN
+                    ================================================================ -->
+                    <div id="quizExamen" class="examen">
+                        <p id="marker-wrapper">
+                            <strong><i class="fa fa-map-marker"></i> Marcador: </strong>
+                            <span id="marker-name" class="text-main"></span>
+                        </p>
+
+                        <label for="input-quiz-name"><h3 class="text-main"><strong>Nombre:</strong></h3></label>
+                        <input type="text" class="my-input2 form-control" id="input-quiz-name" placeholder="Nombre del cuestionario...">
+
+                        <label for="input-quiz-description"><h3 class="text-main"><strong>Descripción:</strong></h3></label>
+                        <textarea class="my-input2 form-control" id="input-quiz-description" placeholder="Descripción del cuestionario..."></textarea>
+
+
+                    </div>
+
+                    <!-- ACTIONS
+                    ================================================================ -->
+                    <div id="quizActionsOffset"></div>
+                    <div id="quizActions">
+                        <hr class="hr-second">
+
+                        <div class="buttonsWrapper text-center">
+                            <button id="btn-add-question" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> <span></span></button>
+
+                            <button id="btn-save-quiz" type="button" class="btn btn-success"><i class="fa fa-save"></i> <span></span></button>
+
+                            <button id="btn-del-quiz" type="button" class="btn btn-danger"><i class="fa fa-trash-o"></i> <span></span></button>
+
+                        </div>
+
+                        <hr class="hr-second">
+
+                        <div style="height: 0px;" class="text-center">
+                               <button id="btn-open-quiz" type="button" class="opened btn btn-success"><i class="fa"></i></button>
+                            </div>
+                    </div>
+
+
+                    <!-- QUIZ QUESTIONS
+                    ================================================================ -->
+                    <div id="quizQuestions" class="questions">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Static Modal
+        ============================================================================== -->
+        <div class="modal modal-static fade" data-backdrop="static" id="processing-modal" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="text-center contenido-modal">
+                            <div class="pull-left"><i class="fa fa-spinner fa-5x fa-spin"></i></div>
+                            <div class="loading-modal-text">Cargando...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Modal
+        ============================================================================== -->
+        <div class="modal modal-static fade modal-error" id="error-modal" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="text-center contenido-modal">
+                            <p class="contenido"></p>
+                            <button data-dismiss="modal" class="btn btn-danger">
+                                <i style="font-size:14px;" class="fa fa-times"></i> Aceptar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Saved Modal
+        ============================================================================== -->
+        <div class="modal modal-static fade modal-success" id="success-modal" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="text-center contenido-modal">
+                            <p class="contenido"></p>
+                            <button data-dismiss="modal" class="btn btn-success">
+                                <i style="font-size:14px;" class="fa fa-check"></i> Aceptar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+        <script src="js/jquery-1.11.0.js" type="text/javascript"></script>
+        <script src="js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="js/fastclick.js" type="text/javascript"></script>
+        <script src="js/quizAdmin.js" type="text/javascript"></script>
+        <script src="js/icheck.min.js" type="text/javascript"></script>
+
+        <script type="text/javascript">
+            app.initialize();
+
+            //app.onDeviceReady();
+        </script>
+
+    </body>
+</html>

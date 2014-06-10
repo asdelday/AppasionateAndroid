@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Backend</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="author" content="Rodrigo Ortega Cuesta">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<script type="text/javascript">
+		var usuario;
+
+		// Sesion
+		if (localStorage.login==null && sessionStorage.login==null) {
+			location.href='index.html';
+		} else if (sessionStorage.login != null) {
+			usuario = JSON.parse(sessionStorage.login);
+            if (usuario.rol.toLowerCase() !== "user") {
+                location.href = "backendProfesor.html";
+            }
+		} else if (localStorage.login != null) {
+			usuario = JSON.parse(localStorage.login);
+            if (usuario.rol.toLowerCase() !== "user") {
+                location.href = "backendProfesor.html";
+            }
+		}
+	</script>
+
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/general.css">
+	<link rel="stylesheet" href="css/backend.css">
+
+     <!-- FooTable -->
+    <link href="css/footables/footable.core.min.css" rel="stylesheet" type="text/css" />
+    <link href="css/footables/footable.metro.min.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div id="menuprincipal" class="page center">
+        <div id="wrapperMenu">
+            <div class="scroller">
+                <div id="contenidoMenu">
+                    <ul id="firstList">
+                        <a style="text-decoration:none" class="menu-principal">
+                            <li>
+                                <i class="fa fa-home"></i>
+                                <span id="menu-usuario-first-list"></span>
+                            </li>
+                        </a>
+                    </ul>
+                    <ul id="ulMenu">
+                        <li id="menu-item-perfil" class="color1">
+                            <a class="menu-perfil">
+                                <div class="titulo text-color-1"><i class="fa fa-user"></i> PERFIL</div>
+                            </a>
+                        </li>
+
+                        <li id="menu-item-marcadores" class="color2">
+                            <a class="menu-marcadores">
+                                <div class="titulo text-color-2"><i class="fa fa-map-marker"></i> MARCADORES</div>
+                            </a>
+                        </li>
+
+                        <li id="menu-item-notas" class="color5">
+                            <a class="menu-notas">
+                                <div class="titulo text-color-5"><i class="fa fa-graduation-cap"></i> NOTAS</div>
+                            </a>
+                        </li>
+
+                        <li id="menu-item-cursos" class="color6">
+                            <a class="menu-cursos">
+                                <div class="titulo text-color-6"><i class="fa fa-book"></i> CURSOS</div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cuerpo" class="page transition center">
+        <div id="header">
+            <a id="btn-menu-principal"><div class="btn"><span id="menuIcon" class="fa fa-bars"></span></div></a>
+            <div id="headerTitulo" class="menu-principal" style="cursor: pointer;">
+                <img class="logo" src="images/icon_appasionate.png" alt="logo" />
+                <h3>Appasionate</h3>
+            </div>
+            <a id="btn-option-salir"><span id="optionSalir" class="glyphicon glyphicon-off" ></span></a>
+        </div>
+
+        <div id="main-wrapper"><div id="wrapper" class="container wrapper-css">
+
+            <!-- PRINCIPAL
+            ==================================================================================================-->
+            <div id="main-principal" class="text-center">
+                <h1><i class="fa fa-home"></i> Principal</h1>
+
+                <div id="main-principal-menu" class="text-center">
+                    <a href="#" class="menu-perfil">
+                        <button id="menu-item-perfil" class="color1 main-menu-item">
+                            <div class="main-menu-icon"><i class="fa fa-user"></i></div>
+                            <div class="titulo text-color-1">PERFIL</div>
+                        </button>
+                    </a>
+
+                    <a href="#" class="menu-marcadores">
+                        <button id="menu-item-marcadores" class="color2 main-menu-item">
+                            <div class="main-menu-icon"><i class="fa fa-map-marker"></i></div>
+                            <div class="titulo text-color-2">MARCADORES</div>
+                        </button>
+                    </a>
+
+                    <a href="#" class="menu-notas">
+                        <button id="menu-item-notas" class="color5 main-menu-item">
+                            <div class="main-menu-icon"><i class="fa fa-graduation-cap"></i></div>
+                            <div class="titulo text-color-5">NOTAS</div>
+                        </button>
+                    </a>
+
+                    <a href="#" class="menu-cursos">
+                        <button id="menu-item-cursos" class="color6 main-menu-item">
+                            <div class="main-menu-icon"><i class="fa fa-book"></i></div>
+                            <div class="titulo text-color-6">CURSOS</div>
+                        </button>
+                    </a>
+
+                    <div class="clearfix" style="height: 20px;"></div>
+                </div>
+            </div>
+
+            <!-- PERFIL
+            ==================================================================================================-->
+            <div id="main-perfil" style="display: none;" class="text-color-1">
+                <h1><i class="fa fa-user"></i> Perfil</h1>
+                <h1 id="perfil-table-error" class="table-error">Error cargando perfil.</h1>
+
+                <form id="perfil-form" role="form">
+                    <div class="perfil-error"></div>
+                    <div class="perfil-success"><p><i class="fa fa-check"></i> Perfil actualizado con éxito</p></div>
+                    <div class="perfil-warning"><p><i class="fa fa-exclamation"></i> No hay cambios que guardar en el perfil</p></div>
+
+                    <div class="form-group">
+                        <label for="inputEmail">Email</label>
+                        <input type="email" class="form-control" id="inputEmail" placeholder="Introduzca email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputNombre">Nombre</label>
+                        <input type="text" class="form-control" id="inputNombre" placeholder="Nombre">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputApellidos">Apellidos</label>
+                        <input type="text" class="form-control" id="inputApellidos" placeholder="Apellidos">
+                    </div>
+
+                    <div class="form-group" style="overflow: hidden;">
+                        <label for="inputPassword">Password</label>
+                        <div class="clearfix"></div>
+                        <input style="width:49%;float:left;" type="password" class="form-control" id="inputPassword1" placeholder="Password">
+                        <input style="width:49%;float:right;" type="password" class="form-control" id="inputPassword2" placeholder="Repita password">
+                    </div>
+
+
+                    <div class="text-left" style="margin-top: 15px;">
+                        <button id="perfil-submit" type="submit" class="btn btn-success">
+                            <i class="fa fa-save"></i> Guardar
+                        </button>
+                        <button id="perfil-reset" type="reset" class="btn btn-warning">
+                            <i class="fa fa-undo"></i> Deshacer
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- MARCADORES
+            ==================================================================================================-->
+            <div id="main-marcadores" style="display: none;" class="text-color-2">
+                <h1><i class="fa fa-map-marker"></i> Marcadores</h1>
+
+                <div class="table-container">
+                    <h1 id="marcadores-table-error" class="table-error">Error cargando marcadores.</h1>
+
+                    <div id="marcadores-filtros" class="filtros filtros-color-2">
+                        <div id="marcadores-filtros-clear" class="clear-filtros filtros-color-2">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <div class="filtros-fields-container fields-2">
+                            <input type="text" class="form-control" id="marcadores-filtros-titulo" placeholder="Título del marcador...">
+
+                            <select name="marcadores-filtros-clase" id="marcadores-filtros-clase" class="form-control"></select>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <table id="marcadores-table" class="footable footable-color-2 table toggle-medium toggle-circle">
+                        <thead>
+                            <tr>
+                                <th data-sort-ignore="true" data-orderby="marcadores.titulo" class="sort asc">Titulo <i class="fa"></i></th>
+                                <th data-sort-ignore="true" data-orderby="clases.nombre" class="sort">Curso <i class="fa"></i></th>
+                                <th data-sort-ignore="true" data-hide="all">Descripción</th>
+                                <th data-sort-ignore="true" data-hide="all">Nota</th>
+                                <th data-sort-ignore="true" data-hide="all">Profesor</th>
+                                <th data-sort-ignore="true" data-hide="all">Localización</th>
+                                <th data-sort-ignore="true" data-hide="all"></th>
+                                <th data-sort-ignore="true" data-name="Ficha"><strong></strong></th>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                        <tfoot class="text-center">
+                            <tr>
+                                <td style="padding: 5px 0px !important;" colspan="10">
+                                    <div id="marcadores-pagination" class="my-pagination">
+                                        <ul>
+                                            <li><a class="pag first-pag pag-arrows left"><i class="fa fa-angle-double-left"></i></a></li>
+                                            <li><a class="pag prev-pag pag-arrows left"><i class="fa fa-angle-left"></i></a></li>
+                                            <li><a class="pag pos1-pag num-pag"></a></li>
+                                            <li><a class="pag pos2-pag num-pag"></a></li>
+                                            <li><a class="pag pos3-pag num-pag"></a></li>
+                                            <li><a class="pag pos4-pag num-pag"></a></li>
+                                            <li><a class="pag pos5-pag num-pag"></a></li>
+                                            <li><a class="pag next-pag pag-arrows right"><i class="fa fa-angle-right"></i></a></li>
+                                            <li><a class="pag last-pag pag-arrows right"><i class="fa fa-angle-double-right"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+            </div>
+
+
+            <!-- NOTAS
+            ==================================================================================================-->
+            <div id="main-notas" style="display: none;" class="text-color-5">
+                <h1><i class="fa fa-graduation-cap"></i> Notas</h1>
+
+                <div class="table-container">
+                    <h1 id="notas-table-error" class="table-error">Error cargando notas.</h1>
+
+                    <div id="notas-filtros" class="filtros filtros-color-5">
+                        <div id="notas-filtros-clear" class="clear-filtros filtros-color-5">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <div class="filtros-fields-container fields-2">
+                            <input type="text" class="form-control" id="notas-filtros-examen" placeholder="Nombre del examen...">
+
+                            <select name="notas-filtros-clase" id="notas-filtros-clase" class="form-control"></select>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <table id="notas-table" class="footable footable-color-5 table toggle-medium toggle-circle">
+                        <thead>
+                            <tr>
+                                <th data-sort-ignore="true" data-orderby="examenes.nombre" class="sort asc">Examen <i class="fa"></i></th>
+                                <th data-sort-ignore="true" data-orderby="notas.fecha" class="sort">Fecha <i class="fa"></i></th>
+                                <th data-sort-ignore="true">Nota</th>
+                                <th data-sort-ignore="true" data-hide="all">Puntuación</th>
+                                <th data-sort-ignore="true" data-hide="all">Marcador</th>
+                                <th data-sort-ignore="true" data-hide="all">Clase</th>
+                                <th data-sort-ignore="true" data-name="Ficha"><strong></strong></th>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                        <tfoot class="text-center">
+                            <tr>
+                                <td style="padding: 5px 0px !important;" colspan="10">
+                                    <div id="notas-pagination" class="my-pagination">
+                                        <ul>
+                                            <li><a class="pag first-pag pag-arrows left"><i class="fa fa-angle-double-left"></i></a></li>
+                                            <li><a class="pag prev-pag pag-arrows left"><i class="fa fa-angle-left"></i></a></li>
+                                            <li><a class="pag pos1-pag num-pag"></a></li>
+                                            <li><a class="pag pos2-pag num-pag"></a></li>
+                                            <li><a class="pag pos3-pag num-pag"></a></li>
+                                            <li><a class="pag pos4-pag num-pag"></a></li>
+                                            <li><a class="pag pos5-pag num-pag"></a></li>
+                                            <li><a class="pag next-pag pag-arrows right"><i class="fa fa-angle-right"></i></a></li>
+                                            <li><a class="pag last-pag pag-arrows right"><i class="fa fa-angle-double-right"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- CURSOS
+            ==================================================================================================-->
+            <div id="main-cursos" style="display: none;" class="text-color-6">
+                <h1><i class="fa fa-book"></i> Cursos</h1>
+
+                <div class="table-container">
+                    <h1 id="cursos-table-error" class="table-error">Error cargando cursos.</h1>
+
+                    <div id="cursos-filtros" class="filtros filtros-color-6">
+                        <div id="cursos-filtros-clear" class="clear-filtros filtros-color-6">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <div class="filtros-fields-container">
+                            <input type="text" class="form-control" id="cursos-filtros-nombre" placeholder="Nombre del curso...">
+                        </div>
+                    </div>
+
+                    <table id="cursos-table" class="footable footable-color-6 table toggle-medium toggle-circle">
+                        <thead>
+                            <tr>
+                                <th data-sort-ignore="true" data-orderby="clases.nombre" class="sort asc">Nombre <i class="fa"></i></th>
+                                <th data-sort-ignore="true" data-orderby="usuarios.nombre" class="sort">Profesor <i class="fa"></i></th>
+                                <th data-sort-ignore="true" data-hide="all">Alumnos</th>
+                                <th data-sort-ignore="true" data-hide="all">Código</th>
+                                <th data-sort-ignore="true" data-name="Ficha" style="text-align: right;">
+                                    <button id="add-curso" class="btn-ficha btn-success btn"><i class="fa fa-plus"></i></button>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                        <tfoot class="text-center">
+                            <tr>
+                                <td style="padding: 5px 0px !important;" colspan="10">
+                                    <div id="cursos-pagination" class="my-pagination">
+                                        <ul>
+                                            <li><a class="pag first-pag pag-arrows left"><i class="fa fa-angle-double-left"></i></a></li>
+                                            <li><a class="pag prev-pag pag-arrows left"><i class="fa fa-angle-left"></i></a></li>
+                                            <li><a class="pag pos1-pag num-pag"></a></li>
+                                            <li><a class="pag pos2-pag num-pag"></a></li>
+                                            <li><a class="pag pos3-pag num-pag"></a></li>
+                                            <li><a class="pag pos4-pag num-pag"></a></li>
+                                            <li><a class="pag pos5-pag num-pag"></a></li>
+                                            <li><a class="pag next-pag pag-arrows right"><i class="fa fa-angle-right"></i></a></li>
+                                            <li><a class="pag last-pag pag-arrows right"><i class="fa fa-angle-double-right"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+            </div>
+
+        </div></div>
+	</div>
+
+
+	<!-- MODAL LOG OUT
+	=====================================================================-->
+	<div id="offModal" data-backdrop="static" class="modal modal-normal fade">
+  		<div class="modal-dialog modal-md">
+    		<div class="modal-content">
+      			<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        			<h4 class="modal-title">Salir</h4>
+      			</div>
+	      		<div class="modal-footer">
+                    <button id="btn-volver-mapa" type="button" class="btn btn-primary">
+                        <i class="fa fa-map-marker"></i> Mapa
+                    </button>
+	        		<button id="btn-cerrar-sesion" type="button" class="btn btn-warning">
+	        			Cerrar sesión
+	        		</button>
+	        		<button id="btn-exit" type="button" class="btn btn-danger">
+	        			Salir
+	        		</button>
+                    <div class="clearfix" style="height: 15px;"></div>
+	        		<button type="button" class="btn btn-default" data-dismiss="modal">
+	        			Cancelar
+	        		</button>
+	      		</div>
+    		</div><!-- /.modal-content -->
+  		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+    <!-- MODAL ADD CURSO
+    =====================================================================-->
+    <div id="addCursoModal" data-backdrop="static" class="modal modal-normal fade">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Añadir curso</h4>
+                </div>
+                <form id="add-curso-form" class="form" role="form">
+                    <div class="modal-body">
+
+                        <input type="text" class="form-control" placeholder="Introduzca código">
+                        <div class="message-error text-danger" style="display: none;"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-check"></i> OK
+                        </button>
+
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            <i class="fa fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- MODAL DELETE CURSO
+    =====================================================================-->
+    <div id="deleteCursoModal" data-backdrop="static" class="modal modal-normal fade">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Quitar curso</h4>
+                </div>
+                <div class="modal-body">
+
+                    ¿Seguro que desea quitar el curso?
+
+                    <div class="bg-danger error-delete-curso">
+                        Error al eliminar curso
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="del-curso-btn" class="btn btn-danger">
+                        <i class="fa fa-check"></i> Si
+                    </button>
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        <i class="fa fa-times"></i> No
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
+	<!-- Static Modal
+    ============================================================================== -->
+    <div class="modal modal-static fade" data-backdrop="static" id="processing-modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center contenido-modal">
+                        <div class="pull-left"><i class="fa fa-spinner fa-5x fa-spin"></i></div>
+                        <div class="loading-modal-text">Cargando...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+	<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+	<script src="js/jquery-1.11.0.js" type="text/javascript"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="js/fastclick.js" type="text/javascript"></script>
+	<script src="js/iscroll.js" type="text/javascript"></script>
+	<script src="js/backendProfesor.js" type="text/javascript"></script>
+    <script src="js/backendAlumno.js" type="text/javascript"></script>
+
+    <script type="text/javascript" src="js/backendPerfil.js"></script>
+
+    <!-- FOOTABLES
+    =============================================================================-->
+    <script type="text/javascript" src="js/footables/footable.all.min.js"></script>
+    <script type="text/javascript" src="js/footables/footableCursos.js"></script>
+    <script type="text/javascript" src="js/footables/footableNotasAlumno.js"></script>
+    <script type="text/javascript" src="js/footables/footableMarcadoresAlumno.js"></script>
+
+
+    <script type="text/javascript">
+        app.initialize();
+
+        //app.onDeviceReady();
+    </script>
+</body>
+</html>

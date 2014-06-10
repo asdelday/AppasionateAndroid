@@ -119,13 +119,39 @@
       				</div>
 
       				<div id="owl-marker" class="owl-carousel"></div>
+
+                    <button style="display:none;" id="btn-delete-img" type="button" class="btn btn-danger"><i class="fa fa-trash-o"></i> Eliminar Img.</button>
       			</div>
 
-      			<div class="modal-footer">
-        			<button type="button" class="btn btn-primary">Save changes</button>
-        			<button type="button" class="btn btn-default" data-dismiss="modal">
-        				<i class="fa fa-times"></i> Cerrar
-        			</button>
+      			<div class="modal-footer" style="text-align: center;">
+                    <!-- CUESTIONARIO -->
+                    <div class="pull-left">
+            			<button id="btn-cuestionario" type="button" class="btn-marker btn btn-primary">
+                            <i class="fa fa-list"></i> Cuestionario
+                        </button>
+
+                        <!-- EDITAR -->
+                        <button id="btn-edit-marker" type="button" style="display: none;" class="btn-marker btn btn-warning">
+                            <i class="fa fa-pencil"></i> Editar
+                        </button>
+
+                        <!-- ADD IMAGES -->
+                        <button data-toggle="modal" data-target="#upload-photos-modal" id="btn-add-images" type="button" style="display: none;" class="btn-marker btn-marker-2 btn btn-success">
+                            <i class="fa fa-plus"></i> <i class="fa fa-image"></i> Imágenes
+                        </button>
+
+                        <!-- ELIMINAR MARKER -->
+                        <button id="btn-del-marker" type="button" style="display: none;" class="btn-marker btn-marker-2 btn btn-danger">
+                            <i class="fa fa-trash-o"></i> Eliminar
+                        </button>
+                    </div>
+
+                    <div id="btn-marker-dismiss-container" class="pull-right">
+                        <!-- CERRAR -->
+            			<button id="btn-marker-dismiss" type="button" class="btn btn-default" data-dismiss="modal">
+            				<i class="fa fa-times"></i> <span></span>
+            			</button>
+                    </div>
       			</div>
 
     		</div><!-- /.modal-content -->
@@ -187,6 +213,60 @@
 	</div><!-- /.modal -->
 
 
+    <!--  EDIT MARKER MODAL
+    ================================================================================-->
+    <div id="edit-marker-modal" data-backdrop="static" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Editar marcador</h4>
+                    <p id="edit-marker-lat-lng"></p>
+                </div>
+
+                <div class="modal-body">
+                    <div id="images-edit-marker-container" style="margin-bottom: 20px;" class="text-center"></div>
+
+                    <div id="edit-marker-form" class="form-horizontal">
+                        <div class="form-group">
+                            <label for="edit-marker-titulo" class="col-sm-2 control-label my-label">Título:</label>
+                            <div class="col-sm-10">
+                                <input id="edit-marker-titulo" type="text" name="edit-marker-titulo" class="my-input form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-marker-descripcion" class="col-sm-2 control-label my-label">Descripción:</label>
+                            <div class="col-sm-10">
+                                <textarea id="edit-marker-descripcion" name="edit-marker-descripcion" class="my-input form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0px;">
+                            <label for="edit-marker-clase" class="col-sm-2 control-label my-label">Clase:</label>
+                            <div class="col-sm-10">
+                                <select id="edit-marker-clase" name="edit-marker-clase" class="my-input form-control"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="edit-marker-errors"></div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="btn-guardar-edit-marcador">
+                        <i class="fa fa-save"></i> Guardar
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        <i class="fa fa-times"></i> Cerrar
+                    </button>
+                </div>
+
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
 	<!--  UPLOAD PHOTOS
 	================================================================================-->
 	<div id="upload-photos-modal" data-backdrop="static" class="modal fade">
@@ -206,22 +286,6 @@
       					<i class="fa fa-camera"></i> Cámara
       				</button>
       				<div id="uploaded-photos" style="padding-top: 20px;">
-
-      					<!--<div class="img-upload">
-      						<img src="http://rodorte.com/appasionate/images/1_28.416706%2C-16.550790.jpg" alt="">
-      						<div class="btns-upload-photo text-center btn-group">
-      							<button onclick="seleccionarFoto($(this))" class="btn btn-sm btn-success active"><i class="fa fa-check"></i></button>
-      							<button onclick="deseleccionarFoto($(this))" class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
-      						</div>
-      					</div>
-
-      					<div class="img-upload">
-      						<img src="http://rodorte.com/appasionate/images/1_28.420025%2C-16.542990.jpg" alt="">
-      						<div class="btns-upload-photo text-center btn-group">
-      							<button onclick="seleccionarFoto($(this))" class="btn btn-sm btn-success active"><i class="fa fa-check"></i></button>
-      							<button onclick="deseleccionarFoto($(this))" class="btn btn-sm btn-danger"><i class="fa fa-times"></i></button>
-      						</div>
-      					</div>-->
       				</div>
       				<div class="clearfix"></div>
       			</div>
@@ -250,6 +314,40 @@
                     <div class="text-center contenido-modal">
                         <div class="pull-left"><i class="fa fa-spinner fa-5x fa-spin"></i></div>
                         <div class="loading-modal-text">Cargando...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal
+    ============================================================================== -->
+    <div class="modal modal-static fade modal-error" id="error-modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center contenido-modal">
+                        <p class="contenido"></p>
+                        <button data-dismiss="modal" class="btn btn-danger">
+                            <i style="font-size:14px;" class="fa fa-times"></i> Aceptar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Saved Modal
+    ============================================================================== -->
+    <div class="modal modal-static fade modal-success" id="success-modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center contenido-modal">
+                        <p class="contenido"></p>
+                        <button data-dismiss="modal" class="btn btn-success">
+                            <i style="font-size:14px;" class="fa fa-check"></i> Aceptar
+                        </button>
                     </div>
                 </div>
             </div>

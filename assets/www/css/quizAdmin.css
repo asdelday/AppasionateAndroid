@@ -1,0 +1,366 @@
+body {
+    background: #DDD !important;
+    background-image: url('../images/bg_pattern1.png') !important;
+}
+/*Inicio estilos de la cabecera*/
+#header {
+    position:absolute; z-index:2;
+    top:0; left:0;
+    width:100%;
+    background: #272727;
+    background-image: url('../images/bg_pattern2.png');
+    border-bottom: 1px solid #FFF;
+    padding:0;
+    color:#FFF;
+    font-size:14px;
+    line-height: 45px;
+    text-align:center;
+    height: 45px;
+    box-shadow: 0px 0px 5px #000;
+    -ms-box-shadow: 0px 0px 5px #000;
+    -moz-box-shadow: 0px 0px 5px #000;
+    -o-box-shadow: 0px 0px 5px #000;
+    -webkit-box-shadow: 0px 0px 5px #000;
+}
+
+#header .btn {
+    position: absolute;
+    font-size: 25px;
+    top: 5px;
+    left: 5px;
+    width: 50px;
+    line-height: 35px;
+    background-color: #777;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    padding: 6px;
+    z-index: 10;
+    border: solid 1px #FFF;
+    box-shadow: 0px 0px 5px #000;
+    -o-box-shadow: 0px 0px 5px #000;
+    -ms-box-shadow: 0px 0px 5px #000;
+    -webkit-box-shadow: 0px 0px 5px #000;
+    -moz-box-shadow: 0px 0px 5px #000;
+}
+#headerTitulo {
+    position: absolute;
+    top: 0px;
+    left: 15px;
+    width: 185px;
+}
+
+#header .btn:active {
+    background-color:#FB7468;
+}
+
+.logo{
+    height:32px;
+    width:auto;
+    margin-top:6px;
+    float: left;
+}
+#headerTitulo h3 {
+    margin: 10px;
+    position: absolute;
+    top: 0px;
+    left: 35px;
+}
+
+#optionSalir {
+    position: absolute;
+    top: 11px;
+    right: 10px;
+    font-size: 25px;
+    cursor: pointer;
+    color: #FFF;
+}
+#optionSalir:hover , #optionSalir:active {
+    color: #FB7064;
+}
+
+
+
+#quizAdminWrapper {
+    margin-top: 45px;
+    width: 100%;
+    padding: 30px;
+}
+
+@media (max-width: 470px) {
+    #quizAdminWrapper {
+        padding: 20px;
+    }
+}
+
+.hr-second {
+    border-top: solid #999;
+}
+
+/* QUIZ ADMIN
+===================================================== */
+#quizAdmin {
+    background: #FFF;
+    border: solid 4px#FB7064;
+    padding: 20px;
+}
+
+@media (max-width: 470px) {
+    #quizAdmin {
+        padding: 15px;
+    }
+}
+
+/* CABECERA EXAMEN
+-----------------------------*/
+#quizExamen label h3, #quizExamen p#marker-wrapper {
+    margin-bottom: 0px;
+}
+
+
+/* ACTIONS
+-----------------------------*/
+#quizActions {
+    background: #EEE;
+    position: relative;
+    top: 0px;
+    -webkit-transition: margin 0.7s;
+    transition: margin 0.7s;
+    -webkit-transition: top 0.3s;
+    transition: top 0.3s;
+    max-height: 80px;
+
+}
+
+#quizActions.scrolling {
+    z-index: 10;
+    box-shadow: 0px 6px 5px -2px #BFB9B9;
+    -moz-box-shadow: 0px 6px 5px -2px #BFB9B9;
+    -webkit-box-shadow: 0px 6px 5px -2px #BFB9B9;
+    -o-box-shadow: 0px 6px 5px -2px #BFB9B9;
+    -ms-box-shadow: 0px 6px 5px -2px #BFB9B9;
+    margin-left: -54px;
+    margin-right: -54px;
+}
+
+@media (max-width: 470px) {
+    #quizActions.scrolling {
+        margin-left: -39px;
+        margin-right: -39px;
+    }
+}
+
+#btn-open-quiz {
+    border-radius: 100%;
+    -moz-border-radius: 100%;
+    -webkit-border-radius: 100%;
+    -ms-border-radius: 100%;
+    -o-border-radius: 100%;
+    position: relative;
+    top: -35px;
+    border: solid 3px #FFF;
+    box-shadow: 0px 0px 5px 0px #555;
+    -moz-box-shadow: 0px 0px 5px 0px #555;
+    -webkit-box-shadow: 0px 0px 5px 0px #555;
+    -ms-box-shadow: 0px 0px 5px 0px #555;
+    -o-box-shadow: 0px 0px 5px 0px #555;
+}
+
+#btn-open-quiz.opened i:before {
+    content: '\f00c';
+}
+#btn-open-quiz.opened {
+    font-size: 16px;
+    padding: 7px 10px;
+}
+
+#btn-open-quiz.closed {
+    font-size: 16px;
+    padding: 7px 13px;
+}
+#btn-open-quiz.closed i:before {
+    content: '\f023';
+}
+
+#btn-add-question span:before {
+    content: 'Pregunta';
+}
+#btn-save-quiz span:before {
+    content: 'Cuestionario';
+}
+#btn-del-quiz span:before {
+    content: 'Cuestionario';
+}
+
+@media (max-width: 428px) {
+    #btn-add-question span:before {
+        content: 'Pregunta';
+    }
+    #btn-save-quiz span:before {
+        content: 'Examen';
+    }
+    #btn-del-quiz span:before {
+        content: 'Examen';
+    }
+}
+
+@media (max-width: 368px) {
+    #btn-add-question span:before {
+        content: 'Prg.';
+    }
+    #btn-save-quiz span:before {
+        content: 'Exm.';
+    }
+    #btn-del-quiz span:before {
+        content: 'Exm.';
+    }
+}
+
+/* QUESTIONS
+-------------------------------*/
+.quiz-question {
+    overflow: hidden;
+    padding: 20px 0px;
+    color: #FB7064;
+    font-weight: bold;
+    font-size: 16px;
+    border-top: solid 2px #FB7064;
+    cursor:pointer;
+}
+
+.quiz-question:hover, .quiz-question:active, .quiz-question.active {
+    background: #EEE;
+}
+
+.quiz-question.active {
+    border-bottom: solid 1px #CCC;
+    box-shadow: 0px 4px 6px -3px #CCC;
+    -moz-box-shadow: 0px 4px 6px -3px #CCC;
+    -webkit-box-shadow: 0px 4px 6px -3px #CCC;
+    -o-box-shadow: 0px 4px 6px -3px #CCC;
+    -ms-box-shadow: 0px 4px 6px -3px #CCC;
+}
+
+.quiz-question:first-child {
+    border-top: 0px;
+}
+
+.quiz-question .icon-question {
+    font-size: 20px;
+    margin-left: 10px;
+}
+
+.quiz-question .icon-question:before {
+    content: '\f054';
+}
+
+.quiz-question.active .icon-question:before {
+    content: '\f078';
+}
+
+.del-question {
+    float: right;
+    margin-right: 2%;
+    margin-left: 4%;
+    font-size: 25px;
+    max-width: 5%;
+    cursor: pointer;
+}
+
+.question-main-content {
+    max-width: 85%;
+    margin-right: 4%;
+}
+
+.cabecera-question-container h4 {
+    margin-bottom: 0px;
+}
+
+
+/* OPTIONS
+--------------------------------*/
+.quiz-options {
+    padding: 15px 10px;
+    background: #f9f9f9;
+}
+
+.quiz-options-wrapper {
+    padding: 20px 0px 0px 20px;
+}
+
+.del-option {
+    margin-right: 10px;
+    margin-left: 15px;
+    font-size: 25px;
+    position: relative;
+    top: 3px;
+    cursor: pointer;
+}
+
+
+/* ERROR MODAL
+=================================*/
+.modal-error {
+    position: fixed;
+    top: 50% !important;
+    left: 50% !important;
+    margin-top: -65px;
+    margin-left: -150px;
+    overflow: visible !important;
+    font-weight: bold;
+}
+
+.modal-error,
+.modal-error .modal-dialog,
+.modal-error .modal-content {
+    width: 300px;
+    max-height: 130px;
+}
+
+.modal-error .modal-body {
+    border: solid 3px #D9534F;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+.modal-error .modal-dialog,
+.modal-error .modal-content {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* MODAL SUCCESS
+=================================*/
+.modal-success {
+    position: fixed;
+    top: 50% !important;
+    left: 50% !important;
+    margin-top: -65px;
+    margin-left: -150px;
+    overflow: visible !important;
+    font-weight: bold;
+}
+
+.modal-success,
+.modal-success .modal-dialog,
+.modal-success .modal-content,
+.modal-success .modal-body {
+    width: 300px;
+    height: 130px;
+}
+
+.modal-success .modal-body {
+    border: solid 3px #5CB85C;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+.modal-success .modal-dialog,
+.modal-success .modal-content {
+    padding: 0 !important;
+    margin: 0 !important;
+}

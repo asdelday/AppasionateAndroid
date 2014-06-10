@@ -443,11 +443,77 @@ a {
 	border-radius: 5px;
 }
 
+/* ERROR MODAL
+=================================*/
+.modal-error {
+    position: fixed;
+    top: 50% !important;
+    left: 50% !important;
+    margin-top: -65px;
+    margin-left: -150px;
+    overflow: visible !important;
+    font-weight: bold;
+}
+
+.modal-error,
+.modal-error .modal-dialog,
+.modal-error .modal-content {
+    width: 300px;
+    max-height: 130px;
+}
+
+.modal-error .modal-body {
+    border: solid 3px #D9534F;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+.modal-error .modal-dialog,
+.modal-error .modal-content {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* MODAL SUCCESS
+=================================*/
+.modal-success {
+    position: fixed;
+    top: 50% !important;
+    left: 50% !important;
+    margin-top: -65px;
+    margin-left: -150px;
+    overflow: visible !important;
+    font-weight: bold;
+}
+
+.modal-success,
+.modal-success .modal-dialog,
+.modal-success .modal-content,
+.modal-success .modal-body {
+    width: 300px;
+    height: 130px;
+}
+
+.modal-success .modal-body {
+    border: solid 3px #5CB85C;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+.modal-success .modal-dialog,
+.modal-success .modal-content {
+    padding: 0 !important;
+    margin: 0 !important;
+}
 
 /*
 	MARKER MODAL
 ***************************************** */
-#marker-modal .modal-header, #new-marker-modal .modal-header, #upload-photos-modal .modal-header {
+#marker-modal .modal-header, #new-marker-modal .modal-header, #edit-marker-modal .modal-header, #upload-photos-modal .modal-header {
 	margin-bottom: 10px;
 	background: #FB7064;
 	color: #FFF;
@@ -465,7 +531,12 @@ a {
 	-webkit-box-shadow: 0px 4px 5px -3px #777;
 }
 
-#marker-modal .modal-footer, #new-marker-modal .modal-footer, #upload-photos-modal .modal-footer {
+#btn-delete-img {
+	width: 100%;
+	margin-top: 15px;
+}
+
+#marker-modal .modal-footer, #new-marker-modal .modal-footer, #edit-marker-modal .modal-footer, #upload-photos-modal .modal-footer {
 	margin-top: 10px;
 	background: #DDD;
 	padding: 5px 5px;
@@ -482,11 +553,51 @@ a {
 	-webkit-box-shadow: 0px -4px 5px -3px #777;
 }
 
+#btn-marker-dismiss span:before {
+	content: 'Cerrar';
+}
+
+@media (max-width: 581px) {
+	.btn-marker {
+		width: 47%;
+		margin: 0px 1% 5px 1% !important;
+	}
+
+	.btn-marker.btn-marker-2 {
+		margin: 0px 1% 0px 1% !important;
+	}
+
+	#marker-modal .modal-footer {
+		padding:5px 1%;
+	}
+
+	#marker-modal .modal-footer > div.pull-left {
+		width: 80%;
+	}
+
+	#marker-modal .modal-footer > div.pull-right {
+		width: 20%;
+	}
+
+	#btn-marker-dismiss {
+		height: 73px;
+		font-size: 30px;
+		width: 100%;
+	}
+
+	#btn-marker-dismiss-container {padding-left: 10px;}
+
+	#btn-marker-dismiss span:before {
+		content: '';
+	}
+}
+
 #images-new-marker-container {
 	margin-bottom: 20px;
 }
 
-#marker-modal .modal-body .main-img, #new-marker-modal .modal-body #images-new-marker-container img{
+#marker-modal .modal-body .main-img, #new-marker-modal .modal-body #images-new-marker-container img,
+#edit-marker-modal .modal-body #images-edit-marker-container img{
 	max-width: 100%;
 	box-shadow: 0px 9px 20px -10px #000;
 	-moz-box-shadow: 0px 9px 20px -10px #000;
@@ -502,13 +613,13 @@ button.close {
 }
 
 
-#new-marker-lat-lng {
+#new-marker-lat-lng, #edit-marker-lat-lng {
 	font-size: 10px;
 	font-style: italic;
 	margin-bottom: 0px;
 }
 
-#new-marker-errors {
+#new-marker-errors, #edit-marker-errors {
 	margin-top: 20px;
 	padding: 10px;
 	text-align: center;

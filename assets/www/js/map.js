@@ -15,9 +15,16 @@ var listObj;
 // POSICIONES MAPA
 var myPosition, myLng, myLat, myLatLng, map, myMarker;
 var marcadores;
+var markerActual;
+var gMarkerActual;
 
 var owlMarker;
 var owlCont = 0;
+
+var latLngNewMarker;
+var fotosNuevoMarcador;
+var arrayUris;
+var contUploadFotos;
 
 
 // OBJETO TU
@@ -93,12 +100,7 @@ function onSuccess(position) {
 
 // Muestra error de geolocalizacion y muestra el mapa en un punto predeterminado
 function onError(error) {
-	navigator.notification.alert(
-	    'Error en la geolocalización, asegurese de tener activado el GPS del dispositivo.',
-	    null,
-	    'Geolocalización',
-	    'Aceptar'
-	);
+	alert('Error en la geolocalización, asegurese de tener activado el GPS del dispositivo.');
 
 	myLat = 28.400;
 	myLng = -16.500;
@@ -168,7 +170,6 @@ function menu(opcion){
 
 // rellena el menu con los marcadores del usuario
 function rellenarMenuMarcadores() {
-
 	var parametros = {"id" : usuario.id_usuario};
 
 	$.ajax({
@@ -179,12 +180,7 @@ function rellenarMenuMarcadores() {
 		error:function(jqXHR,text_status,strError){
 			completarPreCarga("preMarkers");
 
-			navigator.notification.alert(
-			    'No se pudo establecer conexión con el servidor.',
-			    null,
-			    'Conexión',
-			    'Aceptar'
-			);
+			alert('No se pudo establecer conexión con el servidor.');
 		},
 		timeout:60000,
 		success:function(data){
@@ -219,7 +215,7 @@ function completarMenu(data) {
 	    item += '<li id="' + "item" + i + '" class="color' + color + '">';
 		    item += '<a href="javascript:menu(\'' + latLngItem + '\');">';
 			    item += '<div class="titulo text-color-' + color + '">' + data[i].titulo + '</div>';
-			    item += '<div class="class-marker">' + data[i].clase + '</div>';
+			    item += '<div class="clase class-marker">' + data[i].clase + '</div>';
 			    item += '<div class="descripcion">' + latLngItem + '</div>';
 		    item += '</a>';
 	    item += '</li>';
@@ -238,7 +234,7 @@ function completarMenu(data) {
 
 
 	var options = {
-	  	valueNames: [ 'titulo', 'descripcion' ]
+	  	valueNames: [ 'titulo', 'clase', 'descripcion' ]
 	};
 
 	listObj = new List('contenidoMenu', options);
@@ -264,6 +260,12 @@ function crearMarcador(dataMarker) {
 
 	google.maps.event.addListener(marker, 'click', function() {
 		var datos = marker.datos;
+		markerActual = datos.id_marcador;
+		gMarkerActual = marker;
+		fotosNuevoMarcador = new Array();
+		arrayUris = new Array();
+		contUploadFotos = 0;
+		$('#btn-edit-marker, #btn-add-images, #btn-del-marker, #btn-cuestionario, #btn-delete-img').prop('disabled', true);
 
 		var cadBody  = '<p>' + datos.descripcion + '</p>';
 		$('#marker-modal .modal-body .modal-body-contenido').html(cadBody);
@@ -275,11 +277,16 @@ function crearMarcador(dataMarker) {
 
 		if (datos.imagenes.length > 0) {
 			for (var i = 0; i < datos.imagenes.length; i++) {
-				imgCad = '<img src="' + datos.imagenes[i].path_imagen + '"/>';
+				imgCad = '<img data-id="' + datos.imagenes[i].id_imagen + '" src="' + datos.imagenes[i].path_imagen + '"/>';
 
 				owlMarker.addItem(imgCad);
 
 				owlCont++;
+			}
+
+			if (usuario.rol.toLowerCase() === "admin") {
+				$('#btn-delete-img').off('click');
+			    $('#btn-delete-img').show().on('click', deleteMarkerImg);
 			}
 
 			setTimeout(
@@ -290,11 +297,15 @@ function crearMarcador(dataMarker) {
 					    singleItem:true,
 					    autoHeight : true
 					});
+
 				}, 200
 			);
+
+
 		} else {
 			owlMarker.addItem('<h4 class="text-center"><i class="fa fa-image"></i> Sin imágenes</h4>');
 			owlCont++;
+			$('#btn-delete-img').hide();
 
 			setTimeout(
 				function(){
@@ -304,12 +315,12 @@ function crearMarcador(dataMarker) {
 					    singleItem:true,
 					    autoHeight : true
 					});
+
 				}, 200
 			);
 		}
 
 		$('#marker-modal .modal-title').html(datos.titulo);
-
 
 	  	$('#marker-modal').modal('show');
 	});
@@ -335,13 +346,76 @@ function onClickCerrarSesion() {
 
 // Al pulsar en el boton de configuracion
 function onClickConfig() {
-	navigator.notification.alert(
-	    'Configuración para ' + usuario.rol + ': Aun no implementado.',
-	    null,
-	    'Configuración',
-	    'Aceptar'
-	);
+	if (usuario.rol.toLowerCase() !== "admin") {
+        location.href = "backendProfesor.html";
+    } else {
+    	location.href = "backendAlumno.html";
+    }
 }
+
+function deleteMarkerImg() {
+	var current = owlMarker.currentItem + 1;
+    var src = $('#owl-marker .owl-wrapper .owl-item:nth-child(' + current + ') img').attr('src');
+    var idImg = $('#owl-marker .owl-wrapper .owl-item:nth-child(' + current + ') img').data().id;
+
+    $.ajax({
+		url: SERVIDOR + 'delImgMarker.php',
+		type:'POST',
+		data:{"usuario": usuario.id_usuario, "imagen": idImg},
+		dataType:'json',
+		error:function(jqXHR,text_status,strError){
+			alert("No se pudo establecer conexion con el servidor.");
+		},
+		timeout:60000,
+		success:function(data){
+			if (data) {
+				owlMarker.removeItem(current - 1);
+
+			    if ($('#owl-marker .owl-wrapper .owl-item').length === 0) {
+			        $('#btn-delete-img').hide();
+			    }
+
+			    rellenarMenuMarcadores();
+			} else {
+				alert("Error al tratar de eliminar foto.");
+			}
+		}
+	});
+
+}
+
+function deleteMarker(){
+	var res = confirm("Va a eliminar este marcador, ¿Está seguro?");
+
+    if (res == true) {
+        $.ajax({
+			url: SERVIDOR + 'deleteMarker.php',
+			type:'POST',
+			data:{"usuario": usuario.id_usuario, "marker": markerActual},
+			dataType:'json',
+			error:function(jqXHR,text_status,strError){
+				alert("No se pudo establecer conexion con el servidor.");
+
+			},
+			timeout:60000,
+			success:function(data){
+				if (data) {
+					$('#marker-modal').modal('hide');
+					preGeolocated = false;
+					preMarkers = false;
+					preClases = false;
+					rellenarMenuMarcadores();
+					gMarkerActual.setMap(null);
+
+				} else {
+					alert("Error al tratar de eliminar marcador.");
+				}
+			}
+		});
+    }
+
+}
+
 
 /*****************************************************
 *
@@ -363,9 +437,9 @@ function loadClases() {
 			},
 			timeout:60000,
 			success:function(data){
-				$('#new-marker-clase').html('');
+				$('#new-marker-clase, #edit-marker-clase').html('');
 				for (var i = 0; i < data.length; i++) {
-					$('#new-marker-clase').append('<option value="' + data[i].id_clase + '">' + data[i].nombre + '</option>');
+					$('#new-marker-clase, #edit-marker-clase').append('<option value="' + data[i].id_clase + '">' + data[i].nombre + '</option>');
 				}
 
 				completarPreCarga('preClases');
@@ -407,12 +481,7 @@ function reelocalizar(position) {
 
 // Muestra error de geolocalizacion y vuelve a la ultima posicion guardada
 function reelocalizarError(error) {
-	navigator.notification.alert(
-	    'Error en la geolocalización, asegurese de tener activado el GPS del dispositivo.',
-	    null,
-	    'Geolocalización',
-	    'Aceptar'
-	);
+	alert('Error en la geolocalización, asegurese de tener activado el GPS del dispositivo.');
 
 	map.setCenter(myLatLng);
 	map.setZoom(16);
@@ -438,10 +507,6 @@ function completarPreCarga(action) {
 	if (action === "preGeolocated") { preGeolocated = true; }
 	else if (action === "preMarkers") { preMarkers = true; }
 	else if (action === "preClases") { preClases = true; }
-
-	console.log("preGeolocated: " + preGeolocated);
-	console.log("preMarkers: " + preMarkers);
-	console.log("preClases: " + preClases);
 
 	if (preGeolocated && preMarkers && preClases) {
 		$('#processing-modal').modal('hide');
@@ -471,7 +536,7 @@ function initEventsHandlers() {
 	// NEW MARKER
 	$('#btn-guardar-nuevo-marcador').on('click', guardarNuevoMarcador);
 	$('#upload-photos-modal').on('hide.bs.modal', function() {
-		$('#processing-modal .loading-modal-text').html("Recargando marcadores...");
+		$('#processing-modal .loading-modal-text').html("Recargando...");
 		$('#processing-modal').modal('show');
 		rellenarMenuMarcadores();
 	});
@@ -485,6 +550,50 @@ function initEventsHandlers() {
 
 	$("#inputSearchMarkers").on("keyup", onMarkersSearcherKeyUp);
 	$("#inputSearchMarkers").bind("mousedown",function(e){ e.stopPropagation(); });
+
+	// CUESTIONARIO
+	$('#btn-cuestionario').on('click', function() {
+		sessionStorage.idMarker = markerActual;
+
+		if (usuario.rol.toLowerCase() !== "admin") {
+        	location.href = 'quiz.html';
+	    } else {
+	    	location.href = 'quizAdmin.html';
+	    }
+	});
+
+	// DELETE MARKER
+	if (usuario.rol.toLowerCase() === "admin") {
+       	$('#btn-del-marker').show().on('click', deleteMarker);
+	} else {
+	    $('#btn-del-marker').hide();
+	}
+
+	// ADD IMAGES
+	if (usuario.rol.toLowerCase() === "admin") {
+		$('#btn-add-images').show().on('click', function() { $('#marker-modal').modal('hide'); });
+	} else {
+		$('#btn-add-images').hide();
+	}
+
+	// EDIT MARKER
+	if (usuario.rol.toLowerCase() === "admin") {
+		$('#btn-edit-marker').show().on('click', cargarEditMarcador);
+		$('#btn-guardar-edit-marcador').on('click', guardarBtnEditMarcador);
+	} else {
+		$('#btn-edit-marker').hide();
+	}
+
+
+	$('#marker-modal').on('show.bs.modal', function (e) {
+	  $('#btn-edit-marker, #btn-add-images, #btn-del-marker, #btn-cuestionario, #btn-delete-img').prop('disabled', true);
+	});
+	$('#marker-modal').on('shown.bs.modal', function (e) {
+	  	setTimeout(function() {
+	  		$('#btn-edit-marker, #btn-add-images, #btn-del-marker, #btn-cuestionario, #btn-delete-img').prop('disabled', false);
+	  	}, 200);
+	});
+
 }
 
 function limpiarInput() {
@@ -561,40 +670,118 @@ function LongPress(map) {
 };
 
 
+/* =============================================
+**
+*	EDITAR MARCADOR
+*
+* ==============================================*/
+function cargarEditMarcador() {
+	$.ajax({
+		url: SERVIDOR + 'getMarkerFromId.php',
+		type:'POST',
+		data:{"usuario": usuario.id_usuario, "marker": markerActual},
+		dataType:'json',
+		beforeSend: function () {
+			$('#processing-modal .loading-modal-text').html("Cargando marcador...");
+		    $('#processing-modal').modal('show');
+		},
+		error:function(jqXHR,text_status,strError){
+			$('#processing-modal').modal('hide');
+			alert("No se pudo establecer conexion con el servidor.");
+		},
+		timeout:60000,
+		success:function(data){
+			$('#processing-modal').modal('hide');
+			console.log(data);
+			if (data.res) {
+				$('#edit-marker-errors').html('').hide();
+				$('#marker-modal').modal('hide');
+
+				$('#edit-marker-modal #edit-marker-lat-lng').html(data.lat + ", " + data.lng);
+
+				var img1  = '<img src="http://maps.googleapis.com/maps/api/staticmap?center='+data.lat+','+data.lng+'&zoom=14&size=600x200';
+					img1 += '&markers=color:red%7Ccolor:red%7Clabel:M%7C'+data.lat+','+data.lng+'&sensor=false">';
+				$('#images-edit-marker-container').html(img1);
+
+				$('#edit-marker-titulo').val(data.titulo);
+				$('#edit-marker-descripcion').val(data.descripcion);
+				$('#edit-marker-clase').val(data.clase);
+
+				$('#edit-marker-modal').modal('show');
+
+			} else if (data.length === 0) {
+				alert("Usted no puede editar este marcador.");
+
+			} else {
+				alert("Error al tratar de editar marcador.");
+			}
+		}
+	});
+
+}
+
+function guardarBtnEditMarcador() {
+	var parametros = {
+		'titulo': $.trim($('#edit-marker-titulo').val()),
+		'descripcion': $.trim($('#edit-marker-descripcion').val()),
+		"usuario": usuario.id_usuario,
+		"marker": markerActual,
+		'clase': $('#edit-marker-clase').val()
+	}
+
+	if (parametros.titulo === "" || parametros.descripcion === "" || parametros.clase === "") {
+		var errorCad = '<i class="fa fa-exclamation-triangle" style ="font-size:18px;"></i> Complete todos los campos del formulario porfavor.';
+		$('#edit-marker-errors').html(errorCad).show();
+
+	} else {
+		$('#edit-marker-errors').html('').hide();
+
+		$.ajax({
+			url: SERVIDOR + 'editarMarcador.php',
+			type:'POST',
+			data:parametros,
+			dataType:'json',
+			beforeSend: function () {
+				$('#processing-modal .loading-modal-text').html("Editando marcador...");
+		    	$('#processing-modal').modal('show');
+		    },
+			error:function(jqXHR,text_status,strError){
+				$('#processing-modal').modal('hide');
+				alert('No se pudo crear el marcador.');
+			},
+			timeout:60000,
+			success:function(data){
+				console.log(data);
+				if (data.res) {
+					preMarkers = false;
+					$('#edit-marker-modal').modal('hide');
+					$('#processing-modal').modal('hide');
+					rellenarMenuMarcadores();
+
+				} else {
+					$('#processing-modal').modal('hide');
+					alert('No se pudo editar el marcador.');
+				}
+			}
+		});
+	}
+}
+
+
+
 
 /* ==============================================
 **
 /*** CREAR MARCADORES
 **
 ================================================= */
-var latLngNewMarker;
-var idNewMarker = null;
-var fotosNuevoMarcador;
-var arrayUris;
-var contUploadFotos;
+
 function crearNuevoMarcador(event) {
 	fotosNuevoMarcador = new Array();
 	arrayUris = new Array();
 	latLngNewMarker = event.latLng;
-	idNewMarker = null;
+	markerActual = null;
 	contUploadFotos = 0;
-/*
-	var objFoto = {
-    	"uri": 'http://rodorte.com/appasionate/images/1_28.416706%2C-16.550790.jpg',
-    	"estado": true,
-    	"name": '1.jpg'
-    }
-    fotosNuevoMarcador.push(objFoto);
-
-    var objFoto = {
-    	"uri": 'http://rodorte.com/appasionate/images/1_28.420025%2C-16.542990.jpg',
-    	"estado": true,
-    	"name": '2.jpg'
-    }
-    fotosNuevoMarcador.push(objFoto);
-
-    contUploadFotos = 2;
-*/
 
 	$('#new-marker-errors').html('').hide();
 
@@ -639,31 +826,21 @@ function guardarNuevoMarcador() {
 		    	$('#processing-modal').modal('show');
 		    },
 			error:function(jqXHR,text_status,strError){
-				//$('#processing-modal').modal('hide');
-				navigator.notification.alert(
-				    'No se pudo crear el marcador.',
-				    null,
-				    'Nuevo marcador',
-				    'Aceptar'
-				);
+				$('#processing-modal').modal('hide');
+				alert('No se pudo crear el marcador.');
 			},
 			timeout:60000,
 			success:function(data){
 				console.log(data);
 				if (data.res) {
-					idNewMarker = data.id;
+					markerActual = data.id;
 					preMarkers = false;
 					$('#new-marker-modal').modal('hide');
 					$('#processing-modal').modal('hide');
 
 				} else {
 					$('#processing-modal').modal('hide');
-					navigator.notification.alert(
-					    'No se pudo crear el marcador.',
-					    null,
-					    'Nuevo marcador',
-					    'Aceptar'
-					);
+					alert('No se pudo crear el marcador.');
 				}
 			},
 			complete: function() {
@@ -680,12 +857,7 @@ function getImage() {
     navigator.camera.getPicture(
     	selectPhoto,
     	function(message) {
-			navigator.notification.alert(
-				'No se pudo seleccionar la imagen.',
-				null,
-				'Imagen',
-				'Aceptar'
-			);
+			alert('No se pudo seleccionar la imagen.');
 		},
 		{
 			quality: 50,
@@ -700,12 +872,7 @@ function getImageCamera() {
     navigator.camera.getPicture(
     	selectPhoto,
     	function(message) {
-			navigator.notification.alert(
-				'No se pudo seleccionar la imagen.',
-				null,
-				'Imagen',
-				'Aceptar'
-			);
+			alert('No se pudo seleccionar la imagen.');
 		},
 		{
 			quality: 50,
@@ -721,12 +888,7 @@ function getImageCamera() {
 
 function selectPhoto(imageURI) {
 	if (arrayUris.indexOf(imageURI) > -1) {
-		navigator.notification.alert(
-			'Esa imágen ya se encuentra lista para subir.',
-			null,
-			'Subir imágenes',
-			'Aceptar'
-		);
+		alert('Esa imágen ya se encuentra lista para subir.');
 	} else {
 		var millsecs = new Date().getTime()
 	    var nameFoto = millsecs + ".jpeg";
@@ -801,12 +963,7 @@ function uploadPhotos() {
 	    var foto = tempList.pop();
 	    uploadPhoto(foto);
 	} else {
-		navigator.notification.alert(
-			'No hay imágenes listas para subir.',
-			null,
-			'Subir imágenes',
-			'Aceptar'
-		);
+		alert('No hay imágenes listas para subir.');
 	}
 
 	function uploadPhoto(foto) {
@@ -822,7 +979,7 @@ function uploadPhotos() {
 
 	    var params = {};
 	    params.name = foto.name;
-	    params.marker = idNewMarker;
+	    params.marker = markerActual;
 
 	    options.params = params;
 
@@ -836,12 +993,7 @@ function uploadPhotos() {
 	    if (tempList.length == 0) {
 	    	quitarFoto();
 
-       		navigator.notification.alert(
-				'Éxito subiendo las imágenes.',
-				null,
-				'Subir imágenes',
-				'Aceptar'
-			);
+       		alert('Éxito subiendo las imágenes.');
 
 		} else {
 			if (response === 1) {
@@ -850,12 +1002,7 @@ function uploadPhotos() {
 				var foto = tempList.pop();
 	    		uploadPhoto(foto);
 			} else {
-				navigator.notification.alert(
-					'Fallo al subir fotos. Alguna de las imágenes restantes no pudo subirse y se paro la cola.',
-					null,
-					'Subir imágenes',
-					'Aceptar'
-				);
+				alert('Fallo al subir fotos. Alguna de las imágenes restantes no pudo subirse y se paro la cola.');
 			}
 
 		}
@@ -872,12 +1019,7 @@ function uploadPhotos() {
 	}
 
 	function failUpload(error) {
-		navigator.notification.alert(
-			'Fallo al subir fotos. Alguna de las imágenes restantes no pudo subirse y se paro la cola.',
-			null,
-			'Subir imágenes',
-			'Aceptar'
-		);
+		alert('Fallo al subir fotos. Alguna de las imágenes restantes no pudo subirse y se paro la cola.');
 	    console.log("failImg An error has occurred: Code = " + error.code);
 		console.log("upload error source " + error.source);
 		console.log("upload error target " + error.target);
